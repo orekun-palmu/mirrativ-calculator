@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="ja" data-theme="night">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>ぽれくゅミラティブ計算機</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root[data-theme="night"] {
+    --bg-0: #08060f;
+    --bg-1: #0e0a1c;
+    --card: #120e21;
+    --card-border: #241a3d;
+    --text: #f4f2ff;
+    --text-muted: #9b93b8;
+    --pink: #ff2d92;
+    --cyan: #23f4ff;
+    --purple: #b455ff;
+    --glow-soft: 0 0 6px;
+    --glow-strong: 0 0 22px;
+    --input-bg: #1a1430;
+    --shadow-ambient: rgba(0,0,0,0.6);
+  }
+  :root[data-theme="sun"] {
+    --bg-0: #fff4ec;
+    --bg-1: #ffe9dc;
+    --card: #ffffff;
+    --card-border: #ffd6e8;
+    --text: #2c2438;
+    --text-muted: #837a99;
+    --pink: #ff3d94;
+    --cyan: #00c2d1;
+    --purple: #9b3fd6;
+    --glow-soft: 0 0 3px;
+    --glow-strong: 0 0 10px;
+    --input-bg: #fdf1f6;
+    --shadow-ambient: rgba(255,140,180,0.25);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: 'Noto Sans JP', sans-serif;
+    color: var(--text);
+    background:
+      radial-gradient(circle at 15% 20%, color-mix(in srgb, var(--pink) 18%, transparent), transparent 45%),
+      radial-gradient(circle at 85% 75%, color-mix(in srgb, var(--cyan) 16%, transparent), transparent 50%),
+      radial-gradient(circle at 50% 100%, color-mix(in srgb, var(--purple) 14%, transparent), transparent 55%),
+      linear-gradient(160deg, var(--bg-0), var(--bg-1));
+    background-attachment: fixed;
+    display: flex;
+    justify-content: center;
+    padding: 28px 16px 48px;
+    transition: background 0.4s ease, color 0.4s ease;
+  }
+
+  .wrap { width: 100%; max-width: 420px; }
+
+  .top-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 6px;
+  }
+
+  .theme-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 999px;
+    padding: 6px 14px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--text-muted);
+    box-shadow: var(--glow-soft) color-mix(in srgb, var(--cyan) 40%, transparent);
+    user-select: none;
+  }
+  .theme-toggle span.icon { font-size: 15px; }
+
+  h1 {
+    text-align: center;
+    font-family: 'Kosugi Maru', sans-serif;
+    font-size: clamp(22px, 6vw, 28px);
+    margin: 6px 0 2px;
+    color: var(--text);
+    text-shadow:
+      0 0 4px color-mix(in srgb, var(--pink) 90%, transparent),
+      0 0 16px color-mix(in srgb, var(--pink) 55%, transparent),
+      0 0 32px color-mix(in srgb, var(--purple) 35%, transparent);
+    letter-spacing: 0.5px;
+  }
+  .subtitle {
+    text-align: center;
+    font-size: 12.5px;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 18px;
+    padding: 22px 20px 20px;
+    box-shadow:
+      0 12px 30px var(--shadow-ambient),
+      var(--glow-strong) color-mix(in srgb, var(--pink) 25%, transparent);
+    animation: borderPulse 4.5s ease-in-out infinite;
+  }
+
+  @keyframes borderPulse {
+    0%, 100% { box-shadow: 0 12px 30px var(--shadow-ambient), var(--glow-strong) color-mix(in srgb, var(--pink) 22%, transparent); }
+    50% { box-shadow: 0 12px 30px var(--shadow-ambient), var(--glow-strong) color-mix(in srgb, var(--cyan) 30%, transparent); }
+  }
+
+  .gauge-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+  .gauge-label b { color: var(--text); font-weight: 700; }
+
+  .gauge-track {
+    position: relative;
+    height: 16px;
+    border-radius: 999px;
+    background: var(--input-bg);
+    border: 1px solid var(--card-border);
+    overflow: hidden;
+    margin-bottom: 22px;
+  }
+  .gauge-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--purple), var(--pink), var(--cyan));
+    background-size: 200% 100%;
+    box-shadow: 0 0 12px color-mix(in srgb, var(--pink) 70%, transparent);
+    transition: width 0.35s ease;
+    animation: flow 3s linear infinite;
+  }
+  @keyframes flow {
+    0% { background-position: 0% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  .input-group { margin-bottom: 18px; }
+
+  .label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  label {
+    font-weight: 700;
+    font-size: 13.5px;
+    color: var(--text);
+  }
+
+  .reset-btn {
+    background: transparent;
+    border: 1px solid var(--card-border);
+    color: var(--text-muted);
+    font-size: 11.5px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  .reset-btn:hover {
+    color: var(--cyan);
+    border-color: var(--cyan);
+    box-shadow: var(--glow-soft) color-mix(in srgb, var(--cyan) 60%, transparent);
+  }
+
+  input[type="number"] {
+    width: 100%;
+    padding: 12px 14px;
+    background: var(--input-bg);
+    border: 1.5px solid var(--card-border);
+    border-radius: 10px;
+    font-size: 16px;
+    color: var(--text);
+    outline: none;
+    transition: 0.2s;
+  }
+  input[type="number"]:focus {
+    border-color: var(--pink);
+    box-shadow: var(--glow-soft) color-mix(in srgb, var(--pink) 70%, transparent);
+  }
+
+  .quick-btns {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .quick-btn {
+    padding: 9px 0;
+    background: var(--input-bg);
+    border: 1px solid var(--card-border);
+    color: var(--cyan);
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.15s;
+  }
+  .quick-btn:hover {
+    background: color-mix(in srgb, var(--cyan) 14%, var(--input-bg));
+    box-shadow: var(--glow-soft) color-mix(in srgb, var(--cyan) 60%, transparent);
+    transform: translateY(-1px);
+  }
+  .quick-btn:active { transform: translateY(0); }
+
+  .result-box {
+    background: var(--input-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 16px;
+    margin-top: 4px;
+  }
+  .result-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin: 9px 0;
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+  .result-value {
+    font-weight: 900;
+    font-size: 19px;
+    color: var(--pink);
+    text-shadow: 0 0 10px color-mix(in srgb, var(--pink) 55%, transparent);
+  }
+  .result-value.cyan {
+    color: var(--cyan);
+    text-shadow: 0 0 10px color-mix(in srgb, var(--cyan) 55%, transparent);
+  }
+  hr.div {
+    border: 0;
+    border-top: 1px dashed var(--card-border);
+    margin: 10px 0;
+  }
+
+  .notice {
+    font-size: 11.5px;
+    color: var(--text-muted);
+    margin-top: 16px;
+    text-align: center;
+    line-height: 1.6;
+  }
+
+  footer {
+    text-align: center;
+    margin-top: 22px;
+    font-size: 12.5px;
+    color: var(--text-muted);
+  }
+  footer a {
+    color: var(--cyan);
+    text-decoration: none;
+    font-weight: 700;
+    border-bottom: 1px dotted var(--cyan);
+    text-shadow: 0 0 8px color-mix(in srgb, var(--cyan) 50%, transparent);
+  }
+  footer a:hover { color: var(--pink); border-color: var(--pink); text-shadow: 0 0 8px color-mix(in srgb, var(--pink) 50%, transparent); }
+
+  @media (max-width: 380px) {
+    .quick-btns { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card, .gauge-fill { animation: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="top-row">
+    <div class="theme-toggle" id="themeToggle" role="button" aria-label="ナイトモード／サンモード切り替え">
+      <span class="icon" id="themeIcon">🌙</span>
+      <span id="themeLabel">ナイトモード</span>
+    </div>
+  </div>
+
+  <h1>ぽれくゅミラティブ計算機</h1>
+  <div class="subtitle">メーター到達までの必要コインをサクッと計算</div>
+
+  <div class="card">
+    <div class="gauge-label">
+      <span>現在 <b id="gauge-current">0</b> pt</span>
+      <span>目標 <b id="gauge-target">0</b> pt</span>
+    </div>
+    <div class="gauge-track">
+      <div class="gauge-fill" id="gaugeFill"></div>
+    </div>
+
+    <div class="input-group">
+      <div class="label-row">
+        <label for="target-pt">目標のメーターポイント (pt)</label>
+        <button class="reset-btn" onclick="resetTarget()">↺ リセット</button>
+      </div>
+      <input type="number" id="target-pt" placeholder="例: 50000" oninput="calculateCoins()">
+      <div class="quick-btns">
+        <button class="quick-btn" onclick="addTarget(10)">+10</button>
+        <button class="quick-btn" onclick="addTarget(100)">+100</button>
+        <button class="quick-btn" onclick="addTarget(1000)">+1000</button>
+        <button class="quick-btn" onclick="addTarget(10000)">+10000</button>
+      </div>
+    </div>
+
+    <div class="input-group">
+      <div class="label-row">
+        <label for="current-pt">現在のメーターポイント (pt)</label>
+      </div>
+      <input type="number" id="current-pt" placeholder="例: 35000" oninput="calculateCoins()">
+    </div>
+
+    <div class="result-box">
+      <div class="result-item"><span>残りの必要ポイント</span><span class="result-value" id="diff-pt">0 pt</span></div>
+      <hr class="div">
+      <div class="result-item"><span>💰 必要有償コイン</span><span class="result-value" id="paid-coins">0 コイン</span></div>
+      <div class="result-item"><span>🎁 必要無償コイン</span><span class="result-value cyan" id="free-coins">0 コイン</span></div>
+    </div>
+
+    <div class="notice">
+      23時確定に再度計算し直して最安値で負担を減らすための目安計算ツールです
+    </div>
+  </div>
+
+  <footer>
+    制作者のユーザーページはコチラ<br>
+    <a href="https://www.mirrativ.com/user/155781764" target="_blank" rel="noopener">mirrativ.com/user/155781764</a>
+  </footer>
+</div>
+
+<script>
+  function calculateCoins() {
+    const targetPt = parseFloat(document.getElementById('target-pt').value) || 0;
+    const currentPt = parseFloat(document.getElementById('current-pt').value) || 0;
+
+    let diffPt = targetPt - currentPt;
+    if (diffPt < 0) diffPt = 0;
+
+    const paidCoins = diffPt;
+    const freeCoins = Math.ceil(diffPt * 3.37);
+
+    document.getElementById('diff-pt').innerText = diffPt.toLocaleString() + ' pt';
+    document.getElementById('paid-coins').innerText = paidCoins.toLocaleString() + ' コイン';
+    document.getElementById('free-coins').innerText = freeCoins.toLocaleString() + ' コイン';
+
+    document.getElementById('gauge-current').innerText = currentPt.toLocaleString();
+    document.getElementById('gauge-target').innerText = targetPt.toLocaleString();
+    const pct = targetPt > 0 ? Math.min(100, (currentPt / targetPt) * 100) : 0;
+    document.getElementById('gaugeFill').style.width = pct + '%';
+  }
+
+  function addTarget(amount) {
+    const el = document.getElementById('target-pt');
+    const cur = parseFloat(el.value) || 0;
+    el.value = cur + amount;
+    calculateCoins();
+  }
+
+  function resetTarget() {
+    document.getElementById('target-pt').value = '';
+    calculateCoins();
+  }
+
+  const toggle = document.getElementById('themeToggle');
+  const icon = document.getElementById('themeIcon');
+  const label = document.getElementById('themeLabel');
+  const html = document.documentElement;
+
+  function applyTheme(theme) {
+    html.setAttribute('data-theme', theme);
+    if (theme === 'sun') {
+      icon.innerText = '☀️';
+      label.innerText = 'サンモード';
+    } else {
+      icon.innerText = '🌙';
+      label.innerText = 'ナイトモード';
+    }
+  }
+
+  toggle.addEventListener('click', () => {
+    const next = html.getAttribute('data-theme') === 'night' ? 'sun' : 'night';
+    applyTheme(next);
+  });
+
+  calculateCoins();
+</script>
+
+</body>
+</html>
