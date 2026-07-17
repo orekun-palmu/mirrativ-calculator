@@ -333,6 +333,19 @@
       <div class="result-item"><span>🎁 必要無償コイン</span><span class="result-value cyan" id="free-coins">0 コイン</span></div>
     </div>
 
+    <div class="input-group" style="margin-top:18px;">
+      <div class="label-row">
+        <label for="gift-coins">投げる無償コイン数</label>
+      </div>
+      <input type="number" id="gift-coins" placeholder="例: 10000" oninput="calculateGift()">
+    </div>
+
+    <div class="result-box">
+      <div class="result-item"><span>還元率</span><span class="result-value cyan">30%</span></div>
+      <hr class="div">
+      <div class="result-item"><span>💚 還元されるコイン数</span><span class="result-value cyan" id="gift-return">0 コイン</span></div>
+    </div>
+
     <div class="notice">
       23時確定に再度計算し直して最安値で負担を減らすための目安計算ツールです
     </div>
@@ -353,7 +366,7 @@
     if (diffPt < 0) diffPt = 0;
 
     const paidCoins = diffPt;
-    const freeCoins = Math.ceil(diffPt * 3.37);
+    const freeCoins = Math.ceil(diffPt * 3.33);
 
     document.getElementById('diff-pt').innerText = diffPt.toLocaleString() + ' pt';
     document.getElementById('paid-coins').innerText = paidCoins.toLocaleString() + ' コイン';
@@ -370,6 +383,12 @@
     const cur = parseFloat(el.value) || 0;
     el.value = cur + amount;
     calculateCoins();
+  }
+
+  function calculateGift() {
+    const giftCoins = parseFloat(document.getElementById('gift-coins').value) || 0;
+    const returned = Math.round(giftCoins * 0.30);
+    document.getElementById('gift-return').innerText = returned.toLocaleString() + ' コイン';
   }
 
   function resetTarget() {
@@ -399,6 +418,7 @@
   });
 
   calculateCoins();
+  calculateGift();
 </script>
 
 </body>
