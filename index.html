@@ -281,6 +281,167 @@
   @media (prefers-reduced-motion: reduce) {
     .card, .gauge-fill { animation: none; }
   }
+
+  /* ===== ルーレットギフト期待値計算ツール（赤×黒固定） ===== */
+  .roulette-card {
+    background: #000000;
+    border: 1px solid #5c2626;
+    color: #ffb3b3;
+    margin-top: 24px;
+    box-shadow:
+      0 12px 30px rgba(0,0,0,0.7),
+      0 0 22px rgba(255,150,150,0.22);
+    animation: roulettePulse 4.5s ease-in-out infinite;
+  }
+  @keyframes roulettePulse {
+    0%, 100% { box-shadow: 0 12px 30px rgba(0,0,0,0.7), 0 0 22px rgba(255,150,150,0.18); }
+    50% { box-shadow: 0 12px 30px rgba(0,0,0,0.7), 0 0 26px rgba(255,150,150,0.4); }
+  }
+  .roulette-card h2 {
+    text-align: center;
+    margin: 0 0 4px;
+    font-family: 'Kosugi Maru', sans-serif;
+    font-size: 19px;
+    color: #ffb3b3;
+    text-shadow: 0 0 4px rgba(255,150,150,0.9), 0 0 16px rgba(255,150,150,0.5);
+  }
+  .roulette-card .roulette-lead {
+    text-align: center;
+    font-size: 12px;
+    color: #cc9999;
+    margin: 0 0 18px;
+  }
+  .roulette-tabs {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+  .roulette-tab {
+    flex: 1;
+    min-width: 74px;
+    padding: 9px 4px;
+    background: #140000;
+    border: 1px solid #5c2626;
+    color: #ffd6d6;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    text-align: center;
+    transition: 0.15s;
+  }
+  .roulette-tab:hover { color: #ffb3b3; border-color: #ffb3b3; }
+  .roulette-tab[aria-selected="true"] {
+    background: #4d2020;
+    color: #ffb3b3;
+    box-shadow: 0 0 10px rgba(255,150,150,0.5);
+  }
+  .roulette-panel[hidden] { display: none; }
+  .roulette-panel h3 {
+    margin: 0 0 4px;
+    font-size: 14px;
+    color: #ffb3b3;
+  }
+  .roulette-panel .roulette-hint {
+    font-size: 11.5px;
+    color: #cc9999;
+    margin: 0 0 14px;
+  }
+  .roulette-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .roulette-field label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    color: #ffd6d6;
+    margin-bottom: 6px;
+  }
+  .roulette-field input,
+  .roulette-field select {
+    width: 100%;
+    padding: 10px 12px;
+    background: #140000;
+    border: 1.5px solid #5c2626;
+    border-radius: 8px;
+    color: #ffb3b3;
+    font-size: 15px;
+    outline: none;
+    font-family: inherit;
+    transition: 0.2s;
+  }
+  .roulette-field input:focus,
+  .roulette-field select:focus {
+    border-color: #ffb3b3;
+    box-shadow: 0 0 8px rgba(255,150,150,0.6);
+  }
+  .roulette-results {
+    background: #140000;
+    border: 1px solid #5c2626;
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-top: 4px;
+  }
+  .roulette-result-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 13.5px;
+    color: #ffd6d6;
+    margin: 8px 0;
+  }
+  .roulette-result-item b {
+    font-weight: 900;
+    font-size: 17px;
+    color: #ffb3b3;
+    text-shadow: 0 0 8px rgba(255,150,150,0.5);
+  }
+  .roulette-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 14px;
+    font-size: 12px;
+  }
+  .roulette-table th,
+  .roulette-table td {
+    border-bottom: 1px solid #5c2626;
+    padding: 8px 4px;
+    text-align: center;
+    color: #ffd6d6;
+  }
+  .roulette-table th { color: #ffb3b3; }
+  .roulette-note {
+    font-size: 11px;
+    color: #cc9999;
+    margin-top: 14px;
+    line-height: 1.7;
+  }
+  .roulette-formula div {
+    background: #140000;
+    border: 1px solid #5c2626;
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+    font-size: 13px;
+    color: #ffd6d6;
+    line-height: 1.9;
+  }
+  .roulette-formula strong {
+    display: block;
+    color: #ffb3b3;
+    margin-bottom: 4px;
+    font-size: 13.5px;
+  }
+
+  @media (max-width: 380px) {
+    .roulette-grid { grid-template-columns: 1fr; }
+    .roulette-tab { min-width: 46%; }
+  }
 </style>
 </head>
 <body>
@@ -351,15 +512,122 @@
     </div>
   </div>
 
-  <div class="card" style="margin-top:18px;">
-    <div class="label-row" style="margin-bottom:12px;">
-      <label>🔗 便利ツールの共有欄</label>
+  <div class="card roulette-card">
+    <h2>🎯 ルーレットギフト<br class="sp-only">期待値計算ツール</h2>
+    <p class="roulette-lead">ルーレットの進行マスの期待値・消費コイン・目標までに必要なギフト個数の目安を確認できます。</p>
+
+    <div class="roulette-tabs" role="tablist" aria-label="ルーレット計算メニュー">
+      <button type="button" class="roulette-tab" id="r-tab-send" role="tab" aria-selected="true" aria-controls="r-panel-send" data-target="r-panel-send">個数から計算</button>
+      <button type="button" class="roulette-tab" id="r-tab-budget" role="tab" aria-selected="false" aria-controls="r-panel-budget" data-target="r-panel-budget">コインから計算</button>
+      <button type="button" class="roulette-tab" id="r-tab-target" role="tab" aria-selected="false" aria-controls="r-panel-target" data-target="r-panel-target">目標から逆算</button>
+      <button type="button" class="roulette-tab" id="r-tab-formula" role="tab" aria-selected="false" aria-controls="r-panel-formula" data-target="r-panel-formula">確率・期待値</button>
     </div>
-    <div class="result-box" style="padding:14px;">
-      <a href="https://hack-w0r1d.github.io/mirrativ-roulette-calculator/" target="_blank" rel="noopener" style="display:block; color: var(--cyan); text-decoration:none; font-weight:700; font-size:13.5px; text-shadow: 0 0 8px color-mix(in srgb, var(--cyan) 50%, transparent);">
-        Mirrativルレギフ期待値計算
-      </a>
-    </div>
+
+    <section class="roulette-panel" id="r-panel-send" role="tabpanel" aria-labelledby="r-tab-send">
+      <h3>送る個数から計算</h3>
+      <p class="roulette-hint">送る予定の個数を入力してください。</p>
+      <div class="roulette-grid">
+        <div class="roulette-field">
+          <label for="r-free">無償(100) / 個</label>
+          <input id="r-free" type="number" min="0" step="1" value="0" oninput="rCalcSend()">
+        </div>
+        <div class="roulette-field">
+          <label for="r-paid">有償(90) / 個</label>
+          <input id="r-paid" type="number" min="0" step="1" value="0" oninput="rCalcSend()">
+        </div>
+        <div class="roulette-field">
+          <label for="r-ten">有償10連(1000) / 個</label>
+          <input id="r-ten" type="number" min="0" step="1" value="0" oninput="rCalcSend()">
+        </div>
+        <div class="roulette-field">
+          <label for="r-hundred">有償100連(10000) / 個</label>
+          <input id="r-hundred" type="number" min="0" step="1" value="0" oninput="rCalcSend()">
+        </div>
+      </div>
+      <div class="roulette-results">
+        <div class="roulette-result-item"><span>期待される進行マス数</span><b id="r-squares">0.0 マス</b></div>
+        <div class="roulette-result-item"><span>消費無償コイン</span><b id="r-freeCoins">0</b></div>
+        <div class="roulette-result-item"><span>消費有償コイン</span><b id="r-paidCoins">0</b></div>
+      </div>
+    </section>
+
+    <section class="roulette-panel" id="r-panel-budget" role="tabpanel" aria-labelledby="r-tab-budget" hidden>
+      <h3>使用可能なコインから計算</h3>
+      <p class="roulette-hint">使用できる無償コイン・有償コインの上限額を入力してください。</p>
+      <div class="roulette-grid">
+        <div class="roulette-field">
+          <label for="r-budgetFree">使用可能な無償コイン</label>
+          <input id="r-budgetFree" type="number" min="0" step="1" value="0" oninput="rCalcBudget()">
+        </div>
+        <div class="roulette-field">
+          <label for="r-budgetPaid">使用可能な有償コイン</label>
+          <input id="r-budgetPaid" type="number" min="0" step="1" value="0" oninput="rCalcBudget()">
+        </div>
+      </div>
+      <div class="roulette-results">
+        <div class="roulette-result-item"><span>期待される進行マス数(目安)</span><b id="r-budgetSquares">0.0 マス</b></div>
+      </div>
+      <table class="roulette-table">
+        <thead>
+          <tr><th>ギフト</th><th>送る個数</th><th>消費コイン</th><th>期待マス数</th></tr>
+        </thead>
+        <tbody id="r-budgetComparison"></tbody>
+      </table>
+      <p class="roulette-note">
+        ※ 有償コインは有償ルーレットに使用する想定です。<br>
+        ※ 有償コインはコインあたりの期待値が高いギフト（有償10連・100連 &gt; 有償単発）から優先して使い切る組み合わせを想定して表示しています。
+      </p>
+    </section>
+
+    <section class="roulette-panel" id="r-panel-target" role="tabpanel" aria-labelledby="r-tab-target" hidden>
+      <h3>目標マス数から逆算</h3>
+      <p class="roulette-hint">期待値ベースで、目標に届く目安の個数を計算します。</p>
+      <div class="roulette-grid">
+        <div class="roulette-field">
+          <label for="r-target">目標マス数</label>
+          <input id="r-target" type="number" min="0" step="1" value="100" oninput="rCalcTarget()">
+        </div>
+        <div class="roulette-field">
+          <label for="r-current">現在のマス数</label>
+          <input id="r-current" type="number" min="0" step="1" value="0" oninput="rCalcTarget()">
+        </div>
+        <div class="roulette-field" style="grid-column: 1 / -1;">
+          <label for="r-type">使用するギフト(種類)</label>
+          <select id="r-type" onchange="rCalcTarget()">
+            <option value="free">無償ルーレット(100)</option>
+            <option value="paid">有償ルーレット(90)</option>
+            <option value="ten">有償10連ルーレット(1000)</option>
+            <option value="hundred">有償100連ルーレット(10000)</option>
+          </select>
+        </div>
+      </div>
+      <div class="roulette-results">
+        <div class="roulette-result-item"><span>必要な個数の目安</span><b id="r-needCount">0</b></div>
+        <div class="roulette-result-item"><span>必要なコイン数の目安</span><b id="r-needCoins">0</b></div>
+        <div class="roulette-result-item"><span>期待される進行マス数</span><b id="r-expectedAtNeed">0.0 マス</b></div>
+      </div>
+      <table class="roulette-table">
+        <thead>
+          <tr><th>ギフト</th><th>必要個数の目安</th><th>必要コイン</th></tr>
+        </thead>
+        <tbody id="r-comparison"></tbody>
+      </table>
+      <p class="roulette-note">※ 確率に基づく期待値です。実際の進行マス数は出目によって前後するため、目標達成を保証する数値ではありません。</p>
+    </section>
+
+    <section class="roulette-panel" id="r-panel-formula" role="tabpanel" aria-labelledby="r-tab-formula" hidden>
+      <h3>計算に使う確率・期待値</h3>
+      <div class="roulette-formula">
+        <div>
+          <strong>無償(100) / 有償(90)</strong>
+          1マス: 40% / 2マス: 45% / 5マス: 10% / 10マス: 5%<br>期待値: 2.30 マス / 回
+        </div>
+        <div>
+          <strong>有償10連・100連（1連あたり）</strong>
+          2マス: 80% / 5マス: 13% / 10マス: 7%<br>期待値: 2.95 マス / 回
+        </div>
+      </div>
+    </section>
   </div>
 
   <footer>
@@ -430,6 +698,113 @@
 
   calculateCoins();
   calculateGift();
+
+  /* ===== ルーレットギフト期待値計算ツール ===== */
+  const R_EV_SINGLE = 2.30;   // 無償/有償単発の期待値（マス/回）
+  const R_EV_MULTI = 2.95;    // 有償10連・100連（1連あたり）の期待値
+  const R_COST_FREE = 100;
+  const R_COST_PAID = 90;
+  const R_COST_TEN = 1000;
+  const R_COST_HUNDRED = 10000;
+  const R_SPINS_TEN = 10;
+  const R_SPINS_HUNDRED = 100;
+
+  function rCalcSend() {
+    const free = parseFloat(document.getElementById('r-free').value) || 0;
+    const paid = parseFloat(document.getElementById('r-paid').value) || 0;
+    const ten = parseFloat(document.getElementById('r-ten').value) || 0;
+    const hundred = parseFloat(document.getElementById('r-hundred').value) || 0;
+
+    const squares = free * R_EV_SINGLE
+      + paid * R_EV_SINGLE
+      + ten * R_SPINS_TEN * R_EV_MULTI
+      + hundred * R_SPINS_HUNDRED * R_EV_MULTI;
+
+    const freeCoins = free * R_COST_FREE;
+    const paidCoins = paid * R_COST_PAID + ten * R_COST_TEN + hundred * R_COST_HUNDRED;
+
+    document.getElementById('r-squares').textContent = squares.toFixed(1) + ' マス';
+    document.getElementById('r-freeCoins').textContent = freeCoins.toLocaleString();
+    document.getElementById('r-paidCoins').textContent = paidCoins.toLocaleString();
+  }
+
+  function rCalcBudget() {
+    const budgetFree = parseFloat(document.getElementById('r-budgetFree').value) || 0;
+    const budgetPaid = parseFloat(document.getElementById('r-budgetPaid').value) || 0;
+
+    const freeCount = Math.floor(budgetFree / R_COST_FREE);
+    const freeSquares = freeCount * R_EV_SINGLE;
+
+    let remaining = budgetPaid;
+    const hundredCount = Math.floor(remaining / R_COST_HUNDRED);
+    remaining -= hundredCount * R_COST_HUNDRED;
+    const tenCount = Math.floor(remaining / R_COST_TEN);
+    remaining -= tenCount * R_COST_TEN;
+    const paidCount = Math.floor(remaining / R_COST_PAID);
+    remaining -= paidCount * R_COST_PAID;
+
+    const hundredSquares = hundredCount * R_SPINS_HUNDRED * R_EV_MULTI;
+    const tenSquares = tenCount * R_SPINS_TEN * R_EV_MULTI;
+    const paidSquares = paidCount * R_EV_SINGLE;
+
+    const totalSquares = freeSquares + hundredSquares + tenSquares + paidSquares;
+    document.getElementById('r-budgetSquares').textContent = totalSquares.toFixed(1) + ' マス';
+
+    const rows = [
+      ['無償(100)', freeCount, freeCount * R_COST_FREE, freeSquares],
+      ['有償100連(10000)', hundredCount, hundredCount * R_COST_HUNDRED, hundredSquares],
+      ['有償10連(1000)', tenCount, tenCount * R_COST_TEN, tenSquares],
+      ['有償(90)', paidCount, paidCount * R_COST_PAID, paidSquares],
+    ];
+    document.getElementById('r-budgetComparison').innerHTML = rows.map(function (r) {
+      return '<tr><td>' + r[0] + '</td><td>' + r[1].toLocaleString() + '</td><td>'
+        + r[2].toLocaleString() + '</td><td>' + r[3].toFixed(1) + '</td></tr>';
+    }).join('');
+  }
+
+  const R_TARGET_TABLE = {
+    free: { ev: R_EV_SINGLE, cost: R_COST_FREE, label: '無償ルーレット(100)' },
+    paid: { ev: R_EV_SINGLE, cost: R_COST_PAID, label: '有償ルーレット(90)' },
+    ten: { ev: R_SPINS_TEN * R_EV_MULTI, cost: R_COST_TEN, label: '有償10連ルーレット(1000)' },
+    hundred: { ev: R_SPINS_HUNDRED * R_EV_MULTI, cost: R_COST_HUNDRED, label: '有償100連ルーレット(10000)' },
+  };
+
+  function rCalcTarget() {
+    const target = parseFloat(document.getElementById('r-target').value) || 0;
+    const current = parseFloat(document.getElementById('r-current').value) || 0;
+    const type = document.getElementById('r-type').value;
+    const need = Math.max(0, target - current);
+
+    const sel = R_TARGET_TABLE[type];
+    const needCount = sel.ev > 0 ? Math.ceil(need / sel.ev) : 0;
+    const needCoins = needCount * sel.cost;
+    const expectedAtNeed = needCount * sel.ev;
+
+    document.getElementById('r-needCount').textContent = needCount.toLocaleString();
+    document.getElementById('r-needCoins').textContent = needCoins.toLocaleString();
+    document.getElementById('r-expectedAtNeed').textContent = expectedAtNeed.toFixed(1) + ' マス';
+
+    document.getElementById('r-comparison').innerHTML = Object.keys(R_TARGET_TABLE).map(function (key) {
+      const t = R_TARGET_TABLE[key];
+      const c = t.ev > 0 ? Math.ceil(need / t.ev) : 0;
+      return '<tr><td>' + t.label + '</td><td>' + c.toLocaleString() + '</td><td>'
+        + (c * t.cost).toLocaleString() + '</td></tr>';
+    }).join('');
+  }
+
+  const rTabs = document.querySelectorAll('.roulette-tab');
+  rTabs.forEach(function (tab) {
+    tab.addEventListener('click', function () {
+      rTabs.forEach(function (t) { t.setAttribute('aria-selected', 'false'); });
+      document.querySelectorAll('.roulette-panel').forEach(function (p) { p.hidden = true; });
+      tab.setAttribute('aria-selected', 'true');
+      document.getElementById(tab.dataset.target).hidden = false;
+    });
+  });
+
+  rCalcSend();
+  rCalcBudget();
+  rCalcTarget();
 </script>
 
 </body>
