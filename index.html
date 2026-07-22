@@ -98,8 +98,37 @@
     text-align: center;
     font-size: 12.5px;
     color: var(--text-muted);
-    margin-bottom: 20px;
+    margin-bottom: 16px;
   }
+
+  /* メインタブ切り替え用 */
+  .main-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+  .main-tab-btn {
+    flex: 1;
+    padding: 12px 8px;
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    color: var(--text-muted);
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: center;
+    transition: 0.2s;
+  }
+  .main-tab-btn:hover { color: var(--text); }
+  .main-tab-btn.active {
+    background: linear-gradient(135deg, color-mix(in srgb, var(--pink) 25%, var(--card)), color-mix(in srgb, var(--purple) 25%, var(--card)));
+    border-color: var(--pink);
+    color: #fff;
+    box-shadow: 0 0 12px color-mix(in srgb, var(--pink) 40%, transparent);
+  }
+
+  .main-content-panel[hidden] { display: none; }
 
   .card {
     background: var(--card);
@@ -180,7 +209,7 @@
     box-shadow: var(--glow-soft) color-mix(in srgb, var(--cyan) 60%, transparent);
   }
 
-  input[type="number"] {
+  input[type="number"], select {
     width: 100%;
     padding: 12px 14px;
     background: var(--input-bg);
@@ -191,7 +220,7 @@
     outline: none;
     transition: 0.2s;
   }
-  input[type="number"]:focus {
+  input[type="number"]:focus, select:focus {
     border-color: var(--pink);
     box-shadow: var(--glow-soft) color-mix(in srgb, var(--pink) 70%, transparent);
   }
@@ -259,6 +288,164 @@
     line-height: 1.6;
   }
 
+  /* ===== ルーレットギフト期待値計算ツール ===== */
+  .roulette-card h2 {
+    text-align: center;
+    margin: 0 0 4px;
+    font-family: 'Kosugi Maru', sans-serif;
+    font-size: 20px;
+    color: var(--text);
+  }
+  .roulette-lead {
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-muted);
+    margin: 0 0 16px;
+  }
+  
+  /* FEVERトグルボタン */
+  .fever-mode-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--input-bg);
+    border: 1px solid var(--card-border);
+    padding: 10px 14px;
+    border-radius: 12px;
+    margin-bottom: 16px;
+  }
+  .fever-mode-box span {
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .fever-toggle-btn {
+    background: color-mix(in srgb, var(--purple) 20%, var(--input-bg));
+    border: 1px solid var(--purple);
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  .fever-toggle-btn.is-super {
+    background: linear-gradient(90deg, #ff0055, #ffb700);
+    border-color: #ffb700;
+    color: #fff;
+    box-shadow: 0 0 12px rgba(255, 183, 0, 0.6);
+  }
+
+  .roulette-tabs {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+  .roulette-tab {
+    flex: 1;
+    min-width: 74px;
+    padding: 9px 4px;
+    background: var(--input-bg);
+    border: 1px solid var(--card-border);
+    color: var(--text-muted);
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    text-align: center;
+    transition: 0.15s;
+  }
+  .roulette-tab:hover { color: var(--text); }
+  .roulette-tab[aria-selected="true"] {
+    background: color-mix(in srgb, var(--cyan) 20%, var(--input-bg));
+    border-color: var(--cyan);
+    color: var(--cyan);
+    box-shadow: 0 0 10px color-mix(in srgb, var(--cyan) 40%, transparent);
+  }
+  .roulette-panel[hidden] { display: none; }
+  .roulette-panel h3 {
+    margin: 0 0 4px;
+    font-size: 14px;
+    color: var(--text);
+  }
+  .roulette-panel .roulette-hint {
+    font-size: 11.5px;
+    color: var(--text-muted);
+    margin: 0 0 14px;
+  }
+  .roulette-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .roulette-field label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .roulette-results {
+    background: var(--input-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-top: 4px;
+  }
+  .roulette-result-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 13.5px;
+    color: var(--text-muted);
+    margin: 8px 0;
+  }
+  .roulette-result-item b {
+    font-weight: 900;
+    font-size: 17px;
+    color: var(--pink);
+    text-shadow: 0 0 8px color-mix(in srgb, var(--pink) 50%, transparent);
+  }
+  .roulette-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 14px;
+    font-size: 12px;
+  }
+  .roulette-table th,
+  .roulette-table td {
+    border-bottom: 1px solid var(--card-border);
+    padding: 8px 4px;
+    text-align: center;
+    color: var(--text);
+  }
+  .roulette-table th { color: var(--text-muted); }
+  .roulette-note {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 14px;
+    line-height: 1.7;
+  }
+  .roulette-formula div {
+    background: var(--input-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+    font-size: 12.5px;
+    color: var(--text);
+    line-height: 1.8;
+  }
+  .roulette-formula strong {
+    display: block;
+    color: var(--cyan);
+    margin-bottom: 4px;
+    font-size: 13px;
+  }
+
   footer {
     text-align: center;
     margin-top: 22px;
@@ -276,171 +463,12 @@
 
   @media (max-width: 380px) {
     .quick-btns { grid-template-columns: repeat(2, 1fr); }
+    .roulette-grid { grid-template-columns: 1fr; }
+    .roulette-tab { min-width: 46%; }
   }
 
   @media (prefers-reduced-motion: reduce) {
     .card, .gauge-fill { animation: none; }
-  }
-
-  /* ===== ルーレットギフト期待値計算ツール（赤×黒固定） ===== */
-  .roulette-card {
-    background: #000000;
-    border: 1px solid #5c2626;
-    color: #ffb3b3;
-    margin-top: 24px;
-    box-shadow:
-      0 12px 30px rgba(0,0,0,0.7),
-      0 0 22px rgba(255,150,150,0.22);
-    animation: roulettePulse 4.5s ease-in-out infinite;
-  }
-  @keyframes roulettePulse {
-    0%, 100% { box-shadow: 0 12px 30px rgba(0,0,0,0.7), 0 0 22px rgba(255,150,150,0.18); }
-    50% { box-shadow: 0 12px 30px rgba(0,0,0,0.7), 0 0 26px rgba(255,150,150,0.4); }
-  }
-  .roulette-card h2 {
-    text-align: center;
-    margin: 0 0 4px;
-    font-family: 'Kosugi Maru', sans-serif;
-    font-size: 19px;
-    color: #ffb3b3;
-    text-shadow: 0 0 4px rgba(255,150,150,0.9), 0 0 16px rgba(255,150,150,0.5);
-  }
-  .roulette-card .roulette-lead {
-    text-align: center;
-    font-size: 12px;
-    color: #cc9999;
-    margin: 0 0 18px;
-  }
-  .roulette-tabs {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-    margin-bottom: 16px;
-  }
-  .roulette-tab {
-    flex: 1;
-    min-width: 74px;
-    padding: 9px 4px;
-    background: #140000;
-    border: 1px solid #5c2626;
-    color: #ffd6d6;
-    border-radius: 8px;
-    font-size: 12px;
-    font-weight: 700;
-    font-family: inherit;
-    cursor: pointer;
-    text-align: center;
-    transition: 0.15s;
-  }
-  .roulette-tab:hover { color: #ffb3b3; border-color: #ffb3b3; }
-  .roulette-tab[aria-selected="true"] {
-    background: #4d2020;
-    color: #ffb3b3;
-    box-shadow: 0 0 10px rgba(255,150,150,0.5);
-  }
-  .roulette-panel[hidden] { display: none; }
-  .roulette-panel h3 {
-    margin: 0 0 4px;
-    font-size: 14px;
-    color: #ffb3b3;
-  }
-  .roulette-panel .roulette-hint {
-    font-size: 11.5px;
-    color: #cc9999;
-    margin: 0 0 14px;
-  }
-  .roulette-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 16px;
-  }
-  .roulette-field label {
-    display: block;
-    font-size: 12px;
-    font-weight: 700;
-    color: #ffd6d6;
-    margin-bottom: 6px;
-  }
-  .roulette-field input,
-  .roulette-field select {
-    width: 100%;
-    padding: 10px 12px;
-    background: #140000;
-    border: 1.5px solid #5c2626;
-    border-radius: 8px;
-    color: #ffb3b3;
-    font-size: 15px;
-    outline: none;
-    font-family: inherit;
-    transition: 0.2s;
-  }
-  .roulette-field input:focus,
-  .roulette-field select:focus {
-    border-color: #ffb3b3;
-    box-shadow: 0 0 8px rgba(255,150,150,0.6);
-  }
-  .roulette-results {
-    background: #140000;
-    border: 1px solid #5c2626;
-    border-radius: 12px;
-    padding: 14px 16px;
-    margin-top: 4px;
-  }
-  .roulette-result-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    font-size: 13.5px;
-    color: #ffd6d6;
-    margin: 8px 0;
-  }
-  .roulette-result-item b {
-    font-weight: 900;
-    font-size: 17px;
-    color: #ffb3b3;
-    text-shadow: 0 0 8px rgba(255,150,150,0.5);
-  }
-  .roulette-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 14px;
-    font-size: 12px;
-  }
-  .roulette-table th,
-  .roulette-table td {
-    border-bottom: 1px solid #5c2626;
-    padding: 8px 4px;
-    text-align: center;
-    color: #ffd6d6;
-  }
-  .roulette-table th { color: #ffb3b3; }
-  .roulette-note {
-    font-size: 11px;
-    color: #cc9999;
-    margin-top: 14px;
-    line-height: 1.7;
-  }
-  .roulette-formula div {
-    background: #140000;
-    border: 1px solid #5c2626;
-    border-radius: 10px;
-    padding: 12px 14px;
-    margin-bottom: 10px;
-    font-size: 13px;
-    color: #ffd6d6;
-    line-height: 1.9;
-  }
-  .roulette-formula strong {
-    display: block;
-    color: #ffb3b3;
-    margin-bottom: 4px;
-    font-size: 13.5px;
-  }
-
-  @media (max-width: 380px) {
-    .roulette-grid { grid-template-columns: 1fr; }
-    .roulette-tab { min-width: 46%; }
   }
 </style>
 </head>
@@ -455,180 +483,212 @@
   </div>
 
   <h1>ぽれくゅミラティブ計算機</h1>
-  <div class="subtitle">メーター到達までの必要コインをサクッと計算</div>
+  <div class="subtitle">配信枠サポート＆計算ツール</div>
 
-  <div class="card">
-    <div class="gauge-label">
-      <span>現在 <b id="gauge-current">0</b> pt</span>
-      <span>目標 <b id="gauge-target">0</b> pt</span>
-    </div>
-    <div class="gauge-track">
-      <div class="gauge-fill" id="gaugeFill"></div>
-    </div>
-
-    <div class="input-group">
-      <div class="label-row">
-        <label for="target-pt">目標のメーターポイント (pt)</label>
-        <button class="reset-btn" onclick="resetTarget()">↺ リセット</button>
-      </div>
-      <input type="number" id="target-pt" placeholder="例: 50000" oninput="calculateCoins()">
-      <div class="quick-btns">
-        <button class="quick-btn" onclick="addTarget(10)">+10</button>
-        <button class="quick-btn" onclick="addTarget(100)">+100</button>
-        <button class="quick-btn" onclick="addTarget(1000)">+1000</button>
-        <button class="quick-btn" onclick="addTarget(10000)">+10000</button>
-      </div>
-    </div>
-
-    <div class="input-group">
-      <div class="label-row">
-        <label for="current-pt">現在のメーターポイント (pt)</label>
-      </div>
-      <input type="number" id="current-pt" placeholder="例: 35000" oninput="calculateCoins()">
-    </div>
-
-    <div class="result-box">
-      <div class="result-item"><span>残りの必要ポイント</span><span class="result-value" id="diff-pt">0 pt</span></div>
-      <hr class="div">
-      <div class="result-item"><span>💰 必要有償コイン</span><span class="result-value" id="paid-coins">0 コイン</span></div>
-      <div class="result-item"><span>🎁 必要無償コイン</span><span class="result-value cyan" id="free-coins">0 コイン</span></div>
-    </div>
-
-    <div class="input-group" style="margin-top:18px;">
-      <div class="label-row">
-        <label for="gift-coins">投げる無償コイン数</label>
-      </div>
-      <input type="number" id="gift-coins" placeholder="例: 10000" oninput="calculateGift()">
-    </div>
-
-    <div class="result-box">
-      <div class="result-item"><span>還元率</span><span class="result-value cyan">30%</span></div>
-      <hr class="div">
-      <div class="result-item"><span>💚 還元されるコイン数</span><span class="result-value cyan" id="gift-return">0 コイン</span></div>
-    </div>
-
-    <div class="notice">
-      23時確定に再度計算し直して最安値で負担を減らすための目安計算ツールです
-    </div>
+  <!-- メインタブ（切り替えナビ） -->
+  <div class="main-tabs">
+    <button class="main-tab-btn active" onclick="switchMainTab('meter')">📊 メーター計算</button>
+    <button class="main-tab-btn" onclick="switchMainTab('roulette')">🎯 ルレギフ期待値</button>
   </div>
 
-  <div class="card roulette-card">
-    <h2>🎯 ルーレットギフト<br class="sp-only">期待値計算ツール</h2>
-    <p class="roulette-lead">ルーレットの進行マスの期待値・消費コイン・目標までに必要なギフト個数の目安を確認できます。</p>
+  <!-- メインパネル1: メーター計算機能 -->
+  <main class="main-content-panel" id="panel-meter">
+    <div class="card">
+      <div class="gauge-label">
+        <span>現在 <b id="gauge-current">0</b> pt</span>
+        <span>目標 <b id="gauge-target">0</b> pt</span>
+      </div>
+      <div class="gauge-track">
+        <div class="gauge-fill" id="gaugeFill"></div>
+      </div>
 
-    <div class="roulette-tabs" role="tablist" aria-label="ルーレット計算メニュー">
-      <button type="button" class="roulette-tab" id="r-tab-send" role="tab" aria-selected="true" aria-controls="r-panel-send" data-target="r-panel-send">個数から計算</button>
-      <button type="button" class="roulette-tab" id="r-tab-budget" role="tab" aria-selected="false" aria-controls="r-panel-budget" data-target="r-panel-budget">コインから計算</button>
-      <button type="button" class="roulette-tab" id="r-tab-target" role="tab" aria-selected="false" aria-controls="r-panel-target" data-target="r-panel-target">目標から逆算</button>
-      <button type="button" class="roulette-tab" id="r-tab-formula" role="tab" aria-selected="false" aria-controls="r-panel-formula" data-target="r-panel-formula">確率・期待値</button>
+      <div class="input-group">
+        <div class="label-row">
+          <label for="target-pt">目標のメーターポイント (pt)</label>
+          <button class="reset-btn" onclick="resetTarget()">↺ リセット</button>
+        </div>
+        <input type="number" id="target-pt" placeholder="例: 50000" oninput="calculateCoins()">
+        <div class="quick-btns">
+          <button class="quick-btn" onclick="addTarget(10)">+10</button>
+          <button class="quick-btn" onclick="addTarget(100)">+100</button>
+          <button class="quick-btn" onclick="addTarget(1000)">+1000</button>
+          <button class="quick-btn" onclick="addTarget(10000)">+10000</button>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <div class="label-row">
+          <label for="current-pt">現在のメーターポイント (pt)</label>
+        </div>
+        <input type="number" id="current-pt" placeholder="例: 35000" oninput="calculateCoins()">
+      </div>
+
+      <div class="result-box">
+        <div class="result-item"><span>残りの必要ポイント</span><span class="result-value" id="diff-pt">0 pt</span></div>
+        <hr class="div">
+        <div class="result-item"><span>💰 必要有償コイン</span><span class="result-value" id="paid-coins">0 コイン</span></div>
+        <div class="result-item"><span>🎁 必要無償コイン</span><span class="result-value cyan" id="free-coins">0 コイン</span></div>
+      </div>
+
+      <div class="input-group" style="margin-top:18px;">
+        <div class="label-row">
+          <label for="gift-coins">投げる無償コイン数</label>
+        </div>
+        <input type="number" id="gift-coins" placeholder="例: 10000" oninput="calculateGift()">
+      </div>
+
+      <div class="result-box">
+        <div class="result-item"><span>還元率</span><span class="result-value cyan">30%</span></div>
+        <hr class="div">
+        <div class="result-item"><span>💚 還元されるコイン数</span><span class="result-value cyan" id="gift-return">0 コイン</span></div>
+      </div>
+
+      <div class="notice">
+        23時確定に再度計算し直して最安値で負担を減らすための目安計算ツールです
+      </div>
     </div>
+  </main>
 
-    <section class="roulette-panel" id="r-panel-send" role="tabpanel" aria-labelledby="r-tab-send">
-      <h3>送る個数から計算</h3>
-      <p class="roulette-hint">送る予定の個数を入力してください。</p>
-      <div class="roulette-grid">
-        <div class="roulette-field">
-          <label for="r-free">無償(100) / 個</label>
-          <input id="r-free" type="number" min="0" step="1" value="0" oninput="rCalcSend()">
-        </div>
-        <div class="roulette-field">
-          <label for="r-paid">有償(90) / 個</label>
-          <input id="r-paid" type="number" min="0" step="1" value="0" oninput="rCalcSend()">
-        </div>
-        <div class="roulette-field">
-          <label for="r-ten">有償10連(1000) / 個</label>
-          <input id="r-ten" type="number" min="0" step="1" value="0" oninput="rCalcSend()">
-        </div>
-        <div class="roulette-field">
-          <label for="r-hundred">有償100連(10000) / 個</label>
-          <input id="r-hundred" type="number" min="0" step="1" value="0" oninput="rCalcSend()">
-        </div>
-      </div>
-      <div class="roulette-results">
-        <div class="roulette-result-item"><span>期待される進行マス数</span><b id="r-squares">0.0 マス</b></div>
-        <div class="roulette-result-item"><span>消費無償コイン</span><b id="r-freeCoins">0</b></div>
-        <div class="roulette-result-item"><span>消費有償コイン</span><b id="r-paidCoins">0</b></div>
-      </div>
-    </section>
+  <!-- メインパネル2: ルーレットギフト期待値計算機能 -->
+  <main class="main-content-panel" id="panel-roulette" hidden>
+    <div class="card roulette-card">
+      <h2>🎯 ルーレットギフト<br>期待値計算ツール</h2>
+      <p class="roulette-lead">ルーレットの進行マス期待値・消費コイン・必要ギフト個数を計算します。</p>
 
-    <section class="roulette-panel" id="r-panel-budget" role="tabpanel" aria-labelledby="r-tab-budget" hidden>
-      <h3>使用可能なコインから計算</h3>
-      <p class="roulette-hint">使用できる無償コイン・有償コインの上限額を入力してください。</p>
-      <div class="roulette-grid">
-        <div class="roulette-field">
-          <label for="r-budgetFree">使用可能な無償コイン</label>
-          <input id="r-budgetFree" type="number" min="0" step="1" value="0" oninput="rCalcBudget()">
-        </div>
-        <div class="roulette-field">
-          <label for="r-budgetPaid">使用可能な有償コイン</label>
-          <input id="r-budgetPaid" type="number" min="0" step="1" value="0" oninput="rCalcBudget()">
-        </div>
+      <!-- FEVERモードトグル -->
+      <div class="fever-mode-box">
+        <span>状態: <b id="fever-status-text">通常モード</b></span>
+        <button type="button" class="fever-toggle-btn" id="feverToggleBtn" onclick="toggleFeverMode()">⚡ 通常状態</button>
       </div>
-      <div class="roulette-results">
-        <div class="roulette-result-item"><span>期待される進行マス数(目安)</span><b id="r-budgetSquares">0.0 マス</b></div>
-      </div>
-      <table class="roulette-table">
-        <thead>
-          <tr><th>ギフト</th><th>送る個数</th><th>消費コイン</th><th>期待マス数</th></tr>
-        </thead>
-        <tbody id="r-budgetComparison"></tbody>
-      </table>
-      <p class="roulette-note">
-        ※ 有償コインは有償ルーレットに使用する想定です。<br>
-        ※ 有償コインはコインあたりの期待値が高いギフト（有償10連・100連 &gt; 有償単発）から優先して使い切る組み合わせを想定して表示しています。
-      </p>
-    </section>
 
-    <section class="roulette-panel" id="r-panel-target" role="tabpanel" aria-labelledby="r-tab-target" hidden>
-      <h3>目標マス数から逆算</h3>
-      <p class="roulette-hint">期待値ベースで、目標に届く目安の個数を計算します。</p>
-      <div class="roulette-grid">
-        <div class="roulette-field">
-          <label for="r-target">目標マス数</label>
-          <input id="r-target" type="number" min="0" step="1" value="100" oninput="rCalcTarget()">
-        </div>
-        <div class="roulette-field">
-          <label for="r-current">現在のマス数</label>
-          <input id="r-current" type="number" min="0" step="1" value="0" oninput="rCalcTarget()">
-        </div>
-        <div class="roulette-field" style="grid-column: 1 / -1;">
-          <label for="r-type">使用するギフト(種類)</label>
-          <select id="r-type" onchange="rCalcTarget()">
-            <option value="free">無償ルーレット(100)</option>
-            <option value="paid">有償ルーレット(90)</option>
-            <option value="ten">有償10連ルーレット(1000)</option>
-            <option value="hundred">有償100連ルーレット(10000)</option>
-          </select>
-        </div>
+      <div class="roulette-tabs" role="tablist" aria-label="ルーレット計算メニュー">
+        <button type="button" class="roulette-tab" id="r-tab-send" role="tab" aria-selected="true" aria-controls="r-panel-send" data-target="r-panel-send">個数から計算</button>
+        <button type="button" class="roulette-tab" id="r-tab-budget" role="tab" aria-selected="false" aria-controls="r-panel-budget" data-target="r-panel-budget">コインから計算</button>
+        <button type="button" class="roulette-tab" id="r-tab-target" role="tab" aria-selected="false" aria-controls="r-panel-target" data-target="r-panel-target">目標から逆算</button>
+        <button type="button" class="roulette-tab" id="r-tab-formula" role="tab" aria-selected="false" aria-controls="r-panel-formula" data-target="r-panel-formula">確率・仕様</button>
       </div>
-      <div class="roulette-results">
-        <div class="roulette-result-item"><span>必要な個数の目安</span><b id="r-needCount">0</b></div>
-        <div class="roulette-result-item"><span>必要なコイン数の目安</span><b id="r-needCoins">0</b></div>
-        <div class="roulette-result-item"><span>期待される進行マス数</span><b id="r-expectedAtNeed">0.0 マス</b></div>
-      </div>
-      <table class="roulette-table">
-        <thead>
-          <tr><th>ギフト</th><th>必要個数の目安</th><th>必要コイン</th></tr>
-        </thead>
-        <tbody id="r-comparison"></tbody>
-      </table>
-      <p class="roulette-note">※ 確率に基づく期待値です。実際の進行マス数は出目によって前後するため、目標達成を保証する数値ではありません。</p>
-    </section>
 
-    <section class="roulette-panel" id="r-panel-formula" role="tabpanel" aria-labelledby="r-tab-formula" hidden>
-      <h3>計算に使う確率・期待値</h3>
-      <div class="roulette-formula">
-        <div>
-          <strong>無償(100) / 有償(90)</strong>
-          1マス: 40% / 2マス: 45% / 5マス: 10% / 10マス: 5%<br>期待値: 2.30 マス / 回
+      <section class="roulette-panel" id="r-panel-send" role="tabpanel" aria-labelledby="r-tab-send">
+        <h3>送る個数から計算</h3>
+        <p class="roulette-hint">送る予定の個数を入力してください。</p>
+        <div class="roulette-grid">
+          <div class="roulette-field">
+            <label for="r-free">無償(100) / 個</label>
+            <input id="r-free" type="number" min="0" step="1" value="0" oninput="rCalcSend()">
+          </div>
+          <div class="roulette-field">
+            <label for="r-paid">有償(90) / 個</label>
+            <input id="r-paid" type="number" min="0" step="1" value="0" oninput="rCalcSend()">
+          </div>
+          <div class="roulette-field">
+            <label for="r-ten">有償10連(1000) / 個</label>
+            <input id="r-ten" type="number" min="0" step="1" value="0" oninput="rCalcSend()">
+          </div>
+          <div class="roulette-field">
+            <label for="r-hundred">有償100連(10000) / 個</label>
+            <input id="r-hundred" type="number" min="0" step="1" value="0" oninput="rCalcSend()">
+          </div>
         </div>
-        <div>
-          <strong>有償10連・100連（1連あたり）</strong>
-          2マス: 80% / 5マス: 13% / 10マス: 7%<br>期待値: 2.95 マス / 回
+        <div class="roulette-results">
+          <div class="roulette-result-item"><span>期待される進行マス数</span><b id="r-squares">0.0 マス</b></div>
+          <div class="roulette-result-item"><span>消費無償コイン</span><b id="r-freeCoins">0</b></div>
+          <div class="roulette-result-item"><span>消費有償コイン</span><b id="r-paidCoins">0</b></div>
         </div>
-      </div>
-    </section>
-  </div>
+      </section>
+
+      <section class="roulette-panel" id="r-panel-budget" role="tabpanel" aria-labelledby="r-tab-budget" hidden>
+        <h3>使用可能なコインから計算</h3>
+        <p class="roulette-hint">使用できるコインの上限額を入力してください。</p>
+        <div class="roulette-grid">
+          <div class="roulette-field">
+            <label for="r-budgetFree">使用可能な無償コイン</label>
+            <input id="r-budgetFree" type="number" min="0" step="1" value="0" oninput="rCalcBudget()">
+          </div>
+          <div class="roulette-field">
+            <label for="r-budgetPaid">使用可能な有償コイン</label>
+            <input id="r-budgetPaid" type="number" min="0" step="1" value="0" oninput="rCalcBudget()">
+          </div>
+        </div>
+        <div class="roulette-results">
+          <div class="roulette-result-item"><span>期待される進行マス数(目安)</span><b id="r-budgetSquares">0.0 マス</b></div>
+        </div>
+        <table class="roulette-table">
+          <thead>
+            <tr><th>ギフト</th><th>送る個数</th><th>消費コイン</th><th>期待マス数</th></tr>
+          </thead>
+          <tbody id="r-budgetComparison"></tbody>
+        </table>
+        <p class="roulette-note">
+          ※ 有償コインはコインあたりの期待値が高いギフトから優先して使い切る組み合わせを想定して表示しています。
+        </p>
+      </section>
+
+      <section class="roulette-panel" id="r-panel-target" role="tabpanel" aria-labelledby="r-tab-target" hidden>
+        <h3>目標マス数から逆算</h3>
+        <p class="roulette-hint">期待値ベースで、目標に届く目安の個数を計算します。</p>
+        <div class="roulette-grid">
+          <div class="roulette-field">
+            <label for="r-target">目標マス数</label>
+            <input id="r-target" type="number" min="0" step="1" value="100" oninput="rCalcTarget()">
+          </div>
+          <div class="roulette-field">
+            <label for="r-current">現在のマス数</label>
+            <input id="r-current" type="number" min="0" step="1" value="0" oninput="rCalcTarget()">
+          </div>
+          <div class="roulette-field" style="grid-column: 1 / -1;">
+            <label for="r-type">使用するギフト(種類)</label>
+            <select id="r-type" onchange="rCalcTarget()">
+              <option value="free">無償ルーレット(100)</option>
+              <option value="paid">有償ルーレット(90)</option>
+              <option value="ten">有償10連ルーレット(1000)</option>
+              <option value="hundred">有償100連ルーレット(10000)</option>
+            </select>
+          </div>
+        </div>
+        <div class="roulette-results">
+          <div class="roulette-result-item"><span>必要な個数の目安</span><b id="r-needCount">0</b></div>
+          <div class="roulette-result-item"><span>必要なコイン数の目安</span><b id="r-needCoins">0</b></div>
+          <div class="roulette-result-item"><span>期待される進行マス数</span><b id="r-expectedAtNeed">0.0 マス</b></div>
+        </div>
+        <table class="roulette-table">
+          <thead>
+            <tr><th>ギフト</th><th>必要個数の目安</th><th>必要コイン</th></tr>
+          </thead>
+          <tbody id="r-comparison"></tbody>
+        </table>
+        <p class="roulette-note">※ 確率に基づく期待値です。実際の進行マス数は出目によって前後します。</p>
+      </section>
+
+      <section class="roulette-panel" id="r-panel-formula" role="tabpanel" aria-labelledby="r-tab-formula" hidden>
+        <h3>確率・期待値およびFEVER仕様</h3>
+        <div class="roulette-formula">
+          <div>
+            <strong>【通常時】出目と確率</strong>
+            ・無償(100) / 有償(90):<br>
+            1マス:40% / 2マス:45% / 5マス:10% / 10マス:5%<br>
+            👉 期待値: <b>2.30 マス/回</b><br><br>
+            ・有償10連 / 100連 (1連あたり):<br>
+            2マス:80% / 5マス:13% / 10マス:7%<br>
+            👉 期待値: <b>2.95 マス/回</b> (10連: 29.5マス / 100連: 295マス)
+          </div>
+          <div>
+            <strong>【SUPER FEVER時】出目と確率</strong>
+            ・無償(100) / 有償(90):<br>
+            1マス:40% / 2マス:44.5% / 5マス:10% / 10マス:5% / 100マス:0.5%<br>
+            👉 期待値: <b>2.79 マス/回</b><br><br>
+            ・有償10連 / 100連 (1連あたり / 5マス以上確定):<br>
+            5マス:73.5% / 7マス:15% / 10マス:11% / 100マス:0.5%<br>
+            👉 期待値: <b>7.22 マス/回</b> (10連: 72.2マス / 100連: 722マス)
+          </div>
+          <div>
+            <strong>【FEVERシステムの仕様】</strong>
+            ・<b>通常FEVER</b>: ギフトpt 1,000でゲージMAX。100/300/500pt到達時も稀にMAX到達。終了後再度1,000ptで再発動（※タイム追加なし）。<br>
+            ・<b>SUPER FEVER</b>: 通常FEVER発動時に3%の確率で昇格！低確率(0.5%)で100マスが出現。有償10連/100連は5マス以上確定。継続時間3分（重複発生時は時間が延長）。
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
 
   <footer>
     制作者のユーザーページはコチラ<br>
@@ -637,6 +697,26 @@
 </div>
 
 <script>
+  // メインタブ切り替え
+  function switchMainTab(tabName) {
+    const meterPanel = document.getElementById('panel-meter');
+    const roulettePanel = document.getElementById('panel-roulette');
+    const buttons = document.querySelectorAll('.main-tab-btn');
+
+    if (tabName === 'meter') {
+      meterPanel.hidden = false;
+      roulettePanel.hidden = true;
+      buttons[0].classList.add('active');
+      buttons[1].classList.remove('active');
+    } else {
+      meterPanel.hidden = true;
+      roulettePanel.hidden = false;
+      buttons[0].classList.remove('active');
+      buttons[1].classList.add('active');
+    }
+  }
+
+  /* ===== メーター計算機能 ===== */
   function calculateCoins() {
     const targetPt = parseFloat(document.getElementById('target-pt').value) || 0;
     const currentPt = parseFloat(document.getElementById('current-pt').value) || 0;
@@ -675,6 +755,7 @@
     calculateCoins();
   }
 
+  // テーマ切り替え
   const toggle = document.getElementById('themeToggle');
   const icon = document.getElementById('themeIcon');
   const label = document.getElementById('themeLabel');
@@ -699,9 +780,26 @@
   calculateCoins();
   calculateGift();
 
-  /* ===== ルーレットギフト期待値計算ツール ===== */
-  const R_EV_SINGLE = 2.30;   // 無償/有償単発の期待値（マス/回）
-  const R_EV_MULTI = 2.95;    // 有償10連・100連（1連あたり）の期待値
+  /* ===== ルーレットギフト期待値計算機能 ===== */
+  // 通常時の期待値（マス/回）
+  const R_EV_SINGLE_NORMAL = 2.30;
+  const R_EV_MULTI_NORMAL = 2.95;
+
+  // SUPER FEVER時の期待値（マス/回）
+  // 単発: 1*0.4 + 2*0.445 + 5*0.1 + 10*0.05 + 100*0.005 = 2.7875 -> 2.79
+  const R_EV_SINGLE_SUPER = 2.7875;
+  // 有償10連/100連: 5*0.735 + 7*0.15 + 10*0.11 + 100*0.005 = 7.225 -> 7.225
+  const R_EV_MULTI_SUPER = 7.225;
+
+  let isSuperFever = false;
+
+  function getEV() {
+    return {
+      single: isSuperFever ? R_EV_SINGLE_SUPER : R_EV_SINGLE_NORMAL,
+      multi: isSuperFever ? R_EV_MULTI_SUPER : R_EV_MULTI_NORMAL
+    };
+  }
+
   const R_COST_FREE = 100;
   const R_COST_PAID = 90;
   const R_COST_TEN = 1000;
@@ -709,16 +807,39 @@
   const R_SPINS_TEN = 10;
   const R_SPINS_HUNDRED = 100;
 
+  function toggleFeverMode() {
+    isSuperFever = !isSuperFever;
+    const btn = document.getElementById('feverToggleBtn');
+    const statusText = document.getElementById('feverStatusText') || document.getElementById('fever-status-text');
+
+    if (isSuperFever) {
+      btn.textContent = '🔥 SUPER FEVER中';
+      btn.classList.add('is-super');
+      statusText.textContent = 'SUPER FEVER中 (期待値大幅UP)';
+      statusText.style.color = '#ffb700';
+    } else {
+      btn.textContent = '⚡ 通常状態';
+      btn.classList.remove('is-super');
+      statusText.textContent = '通常モード';
+      statusText.style.color = '';
+    }
+
+    rCalcSend();
+    rCalcBudget();
+    rCalcTarget();
+  }
+
   function rCalcSend() {
     const free = parseFloat(document.getElementById('r-free').value) || 0;
     const paid = parseFloat(document.getElementById('r-paid').value) || 0;
     const ten = parseFloat(document.getElementById('r-ten').value) || 0;
     const hundred = parseFloat(document.getElementById('r-hundred').value) || 0;
 
-    const squares = free * R_EV_SINGLE
-      + paid * R_EV_SINGLE
-      + ten * R_SPINS_TEN * R_EV_MULTI
-      + hundred * R_SPINS_HUNDRED * R_EV_MULTI;
+    const ev = getEV();
+    const squares = free * ev.single
+      + paid * ev.single
+      + ten * R_SPINS_TEN * ev.multi
+      + hundred * R_SPINS_HUNDRED * ev.multi;
 
     const freeCoins = free * R_COST_FREE;
     const paidCoins = paid * R_COST_PAID + ten * R_COST_TEN + hundred * R_COST_HUNDRED;
@@ -732,8 +853,9 @@
     const budgetFree = parseFloat(document.getElementById('r-budgetFree').value) || 0;
     const budgetPaid = parseFloat(document.getElementById('r-budgetPaid').value) || 0;
 
+    const ev = getEV();
     const freeCount = Math.floor(budgetFree / R_COST_FREE);
-    const freeSquares = freeCount * R_EV_SINGLE;
+    const freeSquares = freeCount * ev.single;
 
     let remaining = budgetPaid;
     const hundredCount = Math.floor(remaining / R_COST_HUNDRED);
@@ -743,9 +865,9 @@
     const paidCount = Math.floor(remaining / R_COST_PAID);
     remaining -= paidCount * R_COST_PAID;
 
-    const hundredSquares = hundredCount * R_SPINS_HUNDRED * R_EV_MULTI;
-    const tenSquares = tenCount * R_SPINS_TEN * R_EV_MULTI;
-    const paidSquares = paidCount * R_EV_SINGLE;
+    const hundredSquares = hundredCount * R_SPINS_HUNDRED * ev.multi;
+    const tenSquares = tenCount * R_SPINS_TEN * ev.multi;
+    const paidSquares = paidCount * ev.single;
 
     const totalSquares = freeSquares + hundredSquares + tenSquares + paidSquares;
     document.getElementById('r-budgetSquares').textContent = totalSquares.toFixed(1) + ' マス';
@@ -762,20 +884,21 @@
     }).join('');
   }
 
-  const R_TARGET_TABLE = {
-    free: { ev: R_EV_SINGLE, cost: R_COST_FREE, label: '無償ルーレット(100)' },
-    paid: { ev: R_EV_SINGLE, cost: R_COST_PAID, label: '有償ルーレット(90)' },
-    ten: { ev: R_SPINS_TEN * R_EV_MULTI, cost: R_COST_TEN, label: '有償10連ルーレット(1000)' },
-    hundred: { ev: R_SPINS_HUNDRED * R_EV_MULTI, cost: R_COST_HUNDRED, label: '有償100連ルーレット(10000)' },
-  };
-
   function rCalcTarget() {
     const target = parseFloat(document.getElementById('r-target').value) || 0;
     const current = parseFloat(document.getElementById('r-current').value) || 0;
     const type = document.getElementById('r-type').value;
     const need = Math.max(0, target - current);
 
-    const sel = R_TARGET_TABLE[type];
+    const ev = getEV();
+    const targetTable = {
+      free: { ev: ev.single, cost: R_COST_FREE, label: '無償ルーレット(100)' },
+      paid: { ev: ev.single, cost: R_COST_PAID, label: '有償ルーレット(90)' },
+      ten: { ev: R_SPINS_TEN * ev.multi, cost: R_COST_TEN, label: '有償10連ルーレット(1000)' },
+      hundred: { ev: R_SPINS_HUNDRED * ev.multi, cost: R_COST_HUNDRED, label: '有償100連ルーレット(10000)' },
+    };
+
+    const sel = targetTable[type];
     const needCount = sel.ev > 0 ? Math.ceil(need / sel.ev) : 0;
     const needCoins = needCount * sel.cost;
     const expectedAtNeed = needCount * sel.ev;
@@ -784,14 +907,15 @@
     document.getElementById('r-needCoins').textContent = needCoins.toLocaleString();
     document.getElementById('r-expectedAtNeed').textContent = expectedAtNeed.toFixed(1) + ' マス';
 
-    document.getElementById('r-comparison').innerHTML = Object.keys(R_TARGET_TABLE).map(function (key) {
-      const t = R_TARGET_TABLE[key];
+    document.getElementById('r-comparison').innerHTML = Object.keys(targetTable).map(function (key) {
+      const t = targetTable[key];
       const c = t.ev > 0 ? Math.ceil(need / t.ev) : 0;
       return '<tr><td>' + t.label + '</td><td>' + c.toLocaleString() + '</td><td>'
         + (c * t.cost).toLocaleString() + '</td></tr>';
     }).join('');
   }
 
+  // ルーレットサブタブの切り替え
   const rTabs = document.querySelectorAll('.roulette-tab');
   rTabs.forEach(function (tab) {
     tab.addEventListener('click', function () {
