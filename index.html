@@ -489,7 +489,7 @@
   <div class="main-tabs">
     <button class="main-tab-btn active" onclick="switchMainTab('meter')">📊 メーター計算</button>
     <button class="main-tab-btn" onclick="switchMainTab('roulette')">🎯 ルレギフ期待値</button>
-    <button class="main-tab-btn" type="button" onclick="window.open('https://orekun-palmu.github.io/surakoro/', '_blank', 'noopener,noreferrer')">🎲 スラコロ予想</button>
+    <button class="main-tab-btn" onclick="switchMainTab('gift')">🎁 ぽれくゅ逆算計算機</button>
   </div>
 
   <!-- メインパネル1: メーター計算機能 -->
@@ -691,6 +691,68 @@
     </div>
   </main>
 
+  <!-- メインパネル3: ぽれくゅ逆算計算機 -->
+  <main class="main-content-panel" id="panel-gift" hidden>
+    <div class="card">
+      <h2 class="roulette-card-title" style="text-align:center; margin:0 0 4px; font-family:'Kosugi Maru', sans-serif; font-size:20px; color:var(--text);">🎁 ぽれくゅ逆算計算機</h2>
+      <p class="roulette-lead">目標ptまでに必要なギフトの組み合わせを計算します。</p>
+
+      <div class="input-group">
+        <div class="label-row">
+          <label for="g-target">目標pt</label>
+          <button class="reset-btn" onclick="gResetTarget()">↺ リセット</button>
+        </div>
+        <input type="number" id="g-target" placeholder="例: 2000000" oninput="gRecalc()">
+        <div class="quick-btns">
+          <button class="quick-btn" onclick="gAddTarget(250)">+250</button>
+          <button class="quick-btn" onclick="gAddTarget(500)">+500</button>
+          <button class="quick-btn" onclick="gAddTarget(1000)">+1000</button>
+          <button class="quick-btn" onclick="gAddTarget(5000)">+5000</button>
+          <button class="quick-btn" onclick="gAddTarget(10000)">+10000</button>
+          <button class="quick-btn" onclick="gAddTarget(100000)">+100000</button>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <div class="label-row">
+          <label for="g-current">現在のpt</label>
+          <button class="reset-btn" onclick="gResetCurrent()">↺ リセット</button>
+        </div>
+        <input type="number" id="g-current" placeholder="例: 30000" oninput="gRecalc()">
+        <div class="quick-btns">
+          <button class="quick-btn" onclick="gAddCurrent(250)">+250</button>
+          <button class="quick-btn" onclick="gAddCurrent(500)">+500</button>
+          <button class="quick-btn" onclick="gAddCurrent(1000)">+1000</button>
+          <button class="quick-btn" onclick="gAddCurrent(5000)">+5000</button>
+          <button class="quick-btn" onclick="gAddCurrent(10000)">+10000</button>
+          <button class="quick-btn" onclick="gAddCurrent(100000)">+100000</button>
+        </div>
+      </div>
+
+      <div class="result-box">
+        <div class="result-item"><span>必要pt</span><span class="result-value" id="g-diff">0 pt</span></div>
+      </div>
+
+      <div class="fever-mode-box" style="margin-top:16px;">
+        <span>ブースト中: <b id="g-boost-status">OFF</b></span>
+        <button type="button" class="fever-toggle-btn" id="g-boost-btn" onclick="gToggleBoost()">⚡ 通常</button>
+      </div>
+
+      <div class="roulette-tabs" style="margin-top:14px;">
+        <button type="button" class="roulette-tab" id="g-tab-paid" role="tab" aria-selected="true" onclick="gSetPriority('paid')">有償優先</button>
+        <button type="button" class="roulette-tab" id="g-tab-free" role="tab" aria-selected="false" onclick="gSetPriority('free')">無償優先</button>
+      </div>
+
+      <div class="roulette-results" id="g-plan-list" style="margin-top:14px;"></div>
+
+      <table class="roulette-table" id="g-summary-table" style="display:none;">
+        <tbody id="g-summary-body"></tbody>
+      </table>
+
+      <div class="notice">目標pt−現在ptの差から必要なギフトの組み合わせを提案します</div>
+    </div>
+  </main>
+
   <footer>
     制作者のユーザーページはコチラ<br>
     <a href="https://www.mirrativ.com/user/155781764" target="_blank" rel="noopener">mirrativ.com/user/155781764</a>
@@ -702,19 +764,16 @@
   function switchMainTab(tabName) {
     const meterPanel = document.getElementById('panel-meter');
     const roulettePanel = document.getElementById('panel-roulette');
+    const giftPanel = document.getElementById('panel-gift');
     const buttons = document.querySelectorAll('.main-tab-btn');
 
-    if (tabName === 'meter') {
-      meterPanel.hidden = false;
-      roulettePanel.hidden = true;
-      buttons[0].classList.add('active');
-      buttons[1].classList.remove('active');
-    } else {
-      meterPanel.hidden = true;
-      roulettePanel.hidden = false;
-      buttons[0].classList.remove('active');
-      buttons[1].classList.add('active');
-    }
+    meterPanel.hidden = tabName !== 'meter';
+    roulettePanel.hidden = tabName !== 'roulette';
+    giftPanel.hidden = tabName !== 'gift';
+
+    buttons[0].classList.toggle('active', tabName === 'meter');
+    buttons[1].classList.toggle('active', tabName === 'roulette');
+    buttons[2].classList.toggle('active', tabName === 'gift');
   }
 
   /* ===== メーター計算機能 ===== */
@@ -930,6 +989,181 @@
   rCalcSend();
   rCalcBudget();
   rCalcTarget();
+
+  /* ===== ぽれくゅ逆算計算機 ===== */
+  const G_PAID = [
+    { coin: 300,   basePt: 30000   },
+    { coin: 3000,  basePt: 300000  },
+    { coin: 7000,  basePt: 700000  },
+    { coin: 20000, basePt: 2000000 },
+  ];
+  const G_FREE = [
+    { coin: 5,     basePt: 250     },
+    { coin: 300,   basePt: 15000   },
+    { coin: 3000,  basePt: 150000  },
+    { coin: 7000,  basePt: 350000  },
+    { coin: 20000, basePt: 1000000 },
+  ];
+  const G_BOOST_ONLY = { coin: 100, basePt: 5000, label: 'ブースト限定(60倍)ギフト' };
+
+  let gBoostOn = false;
+  let gPriority = 'paid';
+
+  function gFmt(n) { return Math.round(n).toLocaleString('ja-JP'); }
+  function gMultiplier() { return gBoostOn ? 1.2 : 1.0; }
+
+  function gBuildCategories() {
+    const m = gMultiplier();
+    const paidGifts = G_PAID.map(function (g) { return { coin: g.coin, pt: g.basePt * m, type: 'paid' }; });
+    const freeGifts = G_FREE.map(function (g) { return { coin: g.coin, pt: g.basePt * m, type: 'free' }; });
+    if (gBoostOn) {
+      freeGifts.push({ coin: G_BOOST_ONLY.coin, pt: G_BOOST_ONLY.basePt * m, type: 'free', label: G_BOOST_ONLY.label });
+    }
+    const paidCat = { gifts: paidGifts };
+    const freeCat = { gifts: freeGifts };
+    return gPriority === 'paid' ? [paidCat, freeCat] : [freeCat, paidCat];
+  }
+
+  function gComputePlan(neededPt, categories) {
+    let remaining = neededPt;
+    const results = [];
+
+    // 1st pass: pure floor-division through every denom, in priority order, no forced rounding
+    for (let ci = 0; ci < categories.length; ci++) {
+      const denoms = categories[ci].gifts.slice().sort(function (a, b) { return b.pt - a.pt; });
+      for (let di = 0; di < denoms.length; di++) {
+        if (remaining <= 0.0001) break;
+        const g = denoms[di];
+        const count = Math.floor(remaining / g.pt);
+        if (count > 0) {
+          results.push(Object.assign({}, g, { count: count, subtotalPt: count * g.pt, subtotalCoin: count * g.coin }));
+          remaining -= count * g.pt;
+        }
+      }
+    }
+
+    // 2nd pass: top up any leftover using the single smallest denom across ALL categories,
+    // so the overshoot is always minimal regardless of which category was set as priority
+    if (remaining > 0.0001) {
+      let smallest = null;
+      categories.forEach(function (cat) {
+        cat.gifts.forEach(function (g) {
+          if (!smallest || g.pt < smallest.pt) smallest = g;
+        });
+      });
+      if (smallest) {
+        const topUpCount = Math.ceil(remaining / smallest.pt);
+        const existing = results.find(function (r) {
+          return r.coin === smallest.coin && r.type === smallest.type && r.pt === smallest.pt;
+        });
+        if (existing) {
+          existing.count += topUpCount;
+          existing.subtotalPt += topUpCount * smallest.pt;
+          existing.subtotalCoin += topUpCount * smallest.coin;
+        } else {
+          results.push(Object.assign({}, smallest, { count: topUpCount, subtotalPt: topUpCount * smallest.pt, subtotalCoin: topUpCount * smallest.coin }));
+        }
+        remaining -= topUpCount * smallest.pt;
+      }
+    }
+
+    return { results: results, remainingAfter: remaining };
+  }
+
+  function gAddCurrent(v) {
+    const el = document.getElementById('g-current');
+    el.value = (parseFloat(el.value) || 0) + v;
+    gRecalc();
+  }
+  function gAddTarget(v) {
+    const el = document.getElementById('g-target');
+    el.value = (parseFloat(el.value) || 0) + v;
+    gRecalc();
+  }
+  function gResetCurrent() {
+    document.getElementById('g-current').value = '';
+    gRecalc();
+  }
+  function gResetTarget() {
+    document.getElementById('g-target').value = '';
+    gRecalc();
+  }
+  function gToggleBoost() {
+    gBoostOn = !gBoostOn;
+    const btn = document.getElementById('g-boost-btn');
+    const status = document.getElementById('g-boost-status');
+    if (gBoostOn) {
+      btn.textContent = '🔥 ブースト中';
+      btn.classList.add('is-super');
+      status.textContent = 'ON (pt 1.2倍)';
+    } else {
+      btn.textContent = '⚡ 通常';
+      btn.classList.remove('is-super');
+      status.textContent = 'OFF';
+    }
+    gRecalc();
+  }
+  function gSetPriority(p) {
+    gPriority = p;
+    document.getElementById('g-tab-paid').setAttribute('aria-selected', p === 'paid' ? 'true' : 'false');
+    document.getElementById('g-tab-free').setAttribute('aria-selected', p === 'free' ? 'true' : 'false');
+    gRecalc();
+  }
+
+  function gRecalc() {
+    const current = Math.max(0, parseFloat(document.getElementById('g-current').value) || 0);
+    const target = Math.max(0, parseFloat(document.getElementById('g-target').value) || 0);
+    const needed = target - current;
+
+    document.getElementById('g-diff').textContent = needed > 0 ? gFmt(needed) + ' pt' : '達成済み';
+
+    const listEl = document.getElementById('g-plan-list');
+    const summaryTable = document.getElementById('g-summary-table');
+    const summaryBody = document.getElementById('g-summary-body');
+    listEl.innerHTML = '';
+    summaryBody.innerHTML = '';
+    summaryTable.style.display = 'none';
+
+    if (needed <= 0) {
+      listEl.innerHTML = '<div class="roulette-result-item"><span>目標に到達しています</span></div>';
+      return;
+    }
+
+    const categories = gBuildCategories();
+    const plan = gComputePlan(needed, categories);
+    const results = plan.results.slice().sort(function (a, b) { return b.pt - a.pt; });
+
+    if (results.length === 0) {
+      listEl.innerHTML = '<div class="roulette-result-item"><span>該当するギフトがありません</span></div>';
+      return;
+    }
+
+    let totalCoinPaid = 0, totalCoinFree = 0, achievedPt = 0;
+    results.forEach(function (r) {
+      const label = r.label || ((r.type === 'paid' ? '有償 ' : '無償 ') + r.coin.toLocaleString() + 'コイン');
+      const row = document.createElement('div');
+      row.className = 'roulette-result-item';
+      row.innerHTML = '<span>' + label + ' × ' + r.count + '</span><b>' + gFmt(r.subtotalPt) + 'pt</b>';
+      listEl.appendChild(row);
+      if (r.type === 'paid') totalCoinPaid += r.subtotalCoin; else totalCoinFree += r.subtotalCoin;
+      achievedPt += r.subtotalPt;
+    });
+
+    const over = achievedPt - needed;
+    const rows = [
+      ['有償コイン合計', totalCoinPaid > 0 ? gFmt(totalCoinPaid) + ' コイン' : 'なし'],
+      ['無償コイン合計', totalCoinFree > 0 ? gFmt(totalCoinFree) + ' コイン' : 'なし'],
+      ['到達後の合計pt', gFmt(current + achievedPt) + ' pt'],
+    ];
+    if (over > 0.0001) rows.push(['目標超過分', '+' + gFmt(over) + ' pt']);
+
+    summaryTable.style.display = '';
+    summaryBody.innerHTML = rows.map(function (r) {
+      return '<tr><td>' + r[0] + '</td><td>' + r[1] + '</td></tr>';
+    }).join('');
+  }
+
+  gRecalc();
 </script>
 
 </body>
