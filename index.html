@@ -488,9 +488,9 @@
   }
   .g-gift-item {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 6px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3px;
     background: var(--input-bg);
     border: 1px solid var(--card-border);
     border-radius: 10px;
@@ -516,6 +516,7 @@
     cursor: pointer;
     margin: 0;
   }
+  .g-gift-pt { font-size: 10.5px; color: var(--text-muted); padding-left: 22px; line-height: 1.4; }
   .g-gift-note { font-size: 11px; color: var(--text-muted); margin: -8px 0 14px; }
 
   @media (max-width: 380px) {
@@ -1167,6 +1168,14 @@
       lab.appendChild(cb);
       lab.appendChild(document.createTextNode(coin.toLocaleString()));
       item.appendChild(lab);
+
+      const ptInfo = document.createElement('div');
+      ptInfo.className = 'g-gift-pt';
+      const parts = [];
+      if (f.paidExclude.indexOf(coin) === -1) parts.push('有償 ' + gFmt(gGiftPt(gFormula, coin, 'paid')) + 'pt');
+      parts.push('無償 ' + (Math.round(gGiftPt(gFormula, coin, 'free') * 10) / 10).toLocaleString('ja-JP') + 'pt');
+      ptInfo.textContent = parts.join(' / ');
+      item.appendChild(ptInfo);
 
       wrap.appendChild(item);
     });
