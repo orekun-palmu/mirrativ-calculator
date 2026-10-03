@@ -461,6 +461,71 @@
   }
   footer a:hover { color: var(--pink); border-color: var(--pink); text-shadow: 0 0 8px color-mix(in srgb, var(--pink) 50%, transparent); }
 
+
+  /* 逆算計算機: 計算式・ギフト選択 */
+  .g-section-title {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--text-muted);
+    margin: 18px 0 8px;
+  }
+  .g-formula-desc {
+    font-size: 11.5px;
+    line-height: 1.6;
+    color: var(--text-muted);
+    background: var(--input-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    padding: 9px 12px;
+    margin-bottom: 14px;
+  }
+  .g-formula-desc b { color: var(--cyan); }
+  .g-gift-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .g-gift-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    background: var(--input-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    padding: 8px 10px;
+    font-size: 12.5px;
+  }
+  .g-gift-item.is-on {
+    border-color: var(--cyan);
+    box-shadow: var(--glow-soft) color-mix(in srgb, var(--cyan) 40%, transparent);
+  }
+  .g-gift-item label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12.5px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .g-gift-item input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--cyan);
+    cursor: pointer;
+    margin: 0;
+  }
+  .g-gift-item .g-limited {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-muted);
+  }
+  .g-gift-item .g-limited input { accent-color: var(--pink); }
+  .g-gift-item .g-limited.is-on { color: var(--pink); font-weight: 700; }
+  .g-gift-item .g-limited[hidden] { display: none; }
+  .g-gift-note { font-size: 11px; color: var(--text-muted); margin: -8px 0 14px; }
+
   @media (max-width: 380px) {
     .quick-btns { grid-template-columns: repeat(2, 1fr); }
     .roulette-grid { grid-template-columns: 1fr; }
@@ -733,12 +798,25 @@
         <div class="result-item"><span>必要pt</span><span class="result-value" id="g-diff">0 pt</span></div>
       </div>
 
-      <div class="fever-mode-box" style="margin-top:16px;">
+      <div class="g-section-title">イベント計算式</div>
+      <div class="roulette-tabs" role="tablist" aria-label="イベント計算式" style="margin-bottom:10px;">
+        <button type="button" class="roulette-tab" id="g-f-giflan" role="tab" aria-selected="false" onclick="gSetFormula('giflan')">ギフラン式</button>
+        <button type="button" class="roulette-tab" id="g-f-petit" role="tab" aria-selected="true" onclick="gSetFormula('petit')">プチラン式</button>
+        <button type="button" class="roulette-tab" id="g-f-rk" role="tab" aria-selected="false" onclick="gSetFormula('rk')">配信者RK式</button>
+      </div>
+      <div class="g-formula-desc" id="g-formula-desc"></div>
+
+      <div class="fever-mode-box" id="g-boost-box">
         <span>ブースト中: <b id="g-boost-status">OFF</b></span>
         <button type="button" class="fever-toggle-btn" id="g-boost-btn" onclick="gToggleBoost()">⚡ 通常</button>
       </div>
 
-      <div class="roulette-tabs" style="margin-top:14px;">
+      <div class="g-section-title" style="margin-top:4px;">使用するギフト（チェックしたものだけで計算）</div>
+      <div class="g-gift-grid" id="g-gift-select"></div>
+      <div class="g-gift-note" id="g-gift-note"></div>
+
+      <div class="g-section-title" style="margin-top:4px;">コインの優先</div>
+      <div class="roulette-tabs">
         <button type="button" class="roulette-tab" id="g-tab-paid" role="tab" aria-selected="true" onclick="gSetPriority('paid')">有償優先</button>
         <button type="button" class="roulette-tab" id="g-tab-free" role="tab" aria-selected="false" onclick="gSetPriority('free')">無償優先</button>
       </div>
@@ -749,7 +827,7 @@
         <tbody id="g-summary-body"></tbody>
       </table>
 
-      <div class="notice">目標pt−現在ptの差から必要なギフトの組み合わせを提案します</div>
+      <div class="notice">目標pt−現在ptの差から、選んだ計算式・ギフトで必要な組み合わせを提案します</div>
     </div>
   </main>
 
@@ -991,37 +1069,142 @@
   rCalcTarget();
 
   /* ===== ぽれくゅ逆算計算機 ===== */
-  const G_PAID = [
-    { coin: 300,   basePt: 30000   },
-    { coin: 3000,  basePt: 300000  },
-    { coin: 7000,  basePt: 700000  },
-    { coin: 20000, basePt: 2000000 },
-  ];
-  const G_FREE = [
-    { coin: 5,     basePt: 250     },
-    { coin: 300,   basePt: 15000   },
-    { coin: 3000,  basePt: 150000  },
-    { coin: 7000,  basePt: 350000  },
-    { coin: 20000, basePt: 1000000 },
-  ];
-  const G_BOOST_ONLY = { coin: 100, basePt: 5000, label: 'ブースト限定(60倍)ギフト' };
+  // 計算式の定義（coins = 選択できるギフト、paidExclude = 有償コインでは使えないギフト）
+  const G_FORMULAS = {
+    giflan: {
+      coins: [5, 100, 300, 1000, 3000, 7000, 10000, 20000, 30000],
+      paidExclude: [5, 100],
+      boostOnly: [],
+      defaults: [5, 100, 300, 3000, 7000, 20000],
+      hasLimited: false,
+      hasBoost: false,
+      desc: '<b>ギフラン式</b>　イベント限定ギフト（無償コインの100のみ）：<b>1.5倍</b>　それ以外のギフト：<b>等倍</b>'
+    },
+    petit: {
+      coins: [5, 100, 300, 1000, 3000, 7000, 10000, 20000, 30000],
+      paidExclude: [5, 100],
+      boostOnly: [100],
+      defaults: [5, 100, 300, 3000, 7000, 20000],
+      hasLimited: false,
+      hasBoost: true,
+      desc: '<b>プチラン式</b>　無償コイン <b>50倍</b> ／ 有償コイン <b>100倍</b>　ブースト中は全体 ×1.2、ブースト中のみ無償に100コインを追加（<b>60倍</b>）'
+    },
+    rk: {
+      coins: [100, 1000, 10000],
+      paidExclude: [],
+      boostOnly: [],
+      defaults: [100, 1000, 10000],
+      hasLimited: false,
+      hasBoost: false,
+      desc: '<b>配信者RK式</b>　有償コイン <b>100倍</b> ／ 無償コイン <b>50倍</b>　ギフトは100 / 1000 / 10000の3種類'
+    }
+  };
+  const G_BOOST_RATE = 1.2;
+  const G_BOOST_ONLY_COIN = 100;
+  const G_BOOST_ONLY_RATE = 60;
 
+  let gFormula = 'petit';
   let gBoostOn = false;
   let gPriority = 'paid';
 
+  // 計算式ごとの選択状態を保持（切り替えても戻せる）
+  const gState = {};
+  Object.keys(G_FORMULAS).forEach(function (key) {
+    gState[key] = { selected: {}, limited: {} };
+    G_FORMULAS[key].coins.forEach(function (c) {
+      gState[key].selected[c] = G_FORMULAS[key].defaults.indexOf(c) !== -1;
+      gState[key].limited[c] = true;
+    });
+  });
+
   function gFmt(n) { return Math.round(n).toLocaleString('ja-JP'); }
-  function gMultiplier() { return gBoostOn ? 1.2 : 1.0; }
+  function gRound(n) { return Math.round(n * 1000) / 1000; }
+
+  // 1ギフトあたりのptを計算式ごとに求める
+  function gGiftPt(formula, coin, type) {
+    if (formula === 'giflan') {
+      return (coin === 100 && type === 'free') ? coin * 1.5 : coin;
+    }
+    if (formula === 'petit') {
+      if (coin === G_BOOST_ONLY_COIN) return coin * G_BOOST_ONLY_RATE;
+      return coin * (type === 'paid' ? 100 : 50) * (gBoostOn ? G_BOOST_RATE : 1);
+    }
+    return coin * (type === 'paid' ? 100 : 50);
+  }
+
+  function gGiftLabel(formula, coin, type) {
+    const base = (type === 'paid' ? '有償 ' : '無償 ') + coin.toLocaleString() + 'コイン';
+    if (formula === 'petit' && coin === G_BOOST_ONLY_COIN) return base + '（ブースト限定60倍）';
+    if (formula === 'giflan' && coin === 100 && type === 'free') return base + '（限定）';
+    return base;
+  }
 
   function gBuildCategories() {
-    const m = gMultiplier();
-    const paidGifts = G_PAID.map(function (g) { return { coin: g.coin, pt: g.basePt * m, type: 'paid' }; });
-    const freeGifts = G_FREE.map(function (g) { return { coin: g.coin, pt: g.basePt * m, type: 'free' }; });
-    if (gBoostOn) {
-      freeGifts.push({ coin: G_BOOST_ONLY.coin, pt: G_BOOST_ONLY.basePt * m, type: 'free', label: G_BOOST_ONLY.label });
-    }
+    const f = G_FORMULAS[gFormula];
+    const st = gState[gFormula];
+    const paidGifts = [];
+    const freeGifts = [];
+    f.coins.forEach(function (coin) {
+      if (!st.selected[coin]) return;
+      if (f.boostOnly.indexOf(coin) !== -1 && !gBoostOn) return;
+      if (f.paidExclude.indexOf(coin) === -1) {
+        paidGifts.push({ coin: coin, pt: gRound(gGiftPt(gFormula, coin, 'paid')), type: 'paid', label: gGiftLabel(gFormula, coin, 'paid') });
+      }
+      freeGifts.push({ coin: coin, pt: gRound(gGiftPt(gFormula, coin, 'free')), type: 'free', label: gGiftLabel(gFormula, coin, 'free') });
+    });
     const paidCat = { gifts: paidGifts };
     const freeCat = { gifts: freeGifts };
     return gPriority === 'paid' ? [paidCat, freeCat] : [freeCat, paidCat];
+  }
+
+  // ギフト選択UIの描画
+  function gRenderGiftSelect() {
+    const f = G_FORMULAS[gFormula];
+    const st = gState[gFormula];
+    const wrap = document.getElementById('g-gift-select');
+    wrap.innerHTML = '';
+    f.coins.forEach(function (coin) {
+      if (f.boostOnly.indexOf(coin) !== -1 && !gBoostOn) return;
+      const item = document.createElement('div');
+      item.className = 'g-gift-item' + (st.selected[coin] ? ' is-on' : '');
+
+      const lab = document.createElement('label');
+      const cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.checked = !!st.selected[coin];
+      cb.addEventListener('change', function () {
+        st.selected[coin] = cb.checked;
+        item.classList.toggle('is-on', cb.checked);
+        gRecalc();
+      });
+      lab.appendChild(cb);
+      lab.appendChild(document.createTextNode(coin.toLocaleString()));
+      item.appendChild(lab);
+
+      wrap.appendChild(item);
+    });
+
+    const note = document.getElementById('g-gift-note');
+    if (gFormula === 'giflan') {
+      note.textContent = '5コイン・100コイン（限定）は無償コイン専用です';
+    } else if (gFormula === 'petit' && gBoostOn) {
+      note.textContent = '5コイン・100コイン（ブースト限定60倍）は無償コイン専用です';
+    } else if (f.paidExclude.length) {
+      note.textContent = '5コインは無償コイン専用です';
+    } else {
+      note.textContent = '';
+    }
+  }
+
+  function gSetFormula(key) {
+    gFormula = key;
+    ['giflan', 'petit', 'rk'].forEach(function (k) {
+      document.getElementById('g-f-' + k).setAttribute('aria-selected', k === key ? 'true' : 'false');
+    });
+    document.getElementById('g-formula-desc').innerHTML = G_FORMULAS[key].desc;
+    document.getElementById('g-boost-box').style.display = G_FORMULAS[key].hasBoost ? '' : 'none';
+    gRenderGiftSelect();
+    gRecalc();
   }
 
   function gComputePlan(neededPt, categories) {
@@ -1101,6 +1284,7 @@
       btn.classList.remove('is-super');
       status.textContent = 'OFF';
     }
+    gRenderGiftSelect();
     gRecalc();
   }
   function gSetPriority(p) {
@@ -1134,7 +1318,7 @@
     const results = plan.results.slice().sort(function (a, b) { return b.pt - a.pt; });
 
     if (results.length === 0) {
-      listEl.innerHTML = '<div class="roulette-result-item"><span>該当するギフトがありません</span></div>';
+      listEl.innerHTML = '<div class="roulette-result-item"><span>ギフトを1つ以上選択してください</span></div>';
       return;
     }
 
@@ -1163,7 +1347,7 @@
     }).join('');
   }
 
-  gRecalc();
+  gSetFormula('petit');
 </script>
 
 </body>
