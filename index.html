@@ -516,14 +516,6 @@
     cursor: pointer;
     margin: 0;
   }
-  .g-gift-item .g-limited {
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--text-muted);
-  }
-  .g-gift-item .g-limited input { accent-color: var(--pink); }
-  .g-gift-item .g-limited.is-on { color: var(--pink); font-weight: 700; }
-  .g-gift-item .g-limited[hidden] { display: none; }
   .g-gift-note { font-size: 11px; color: var(--text-muted); margin: -8px 0 14px; }
 
   @media (max-width: 380px) {
@@ -1072,20 +1064,18 @@
   // 計算式の定義（coins = 選択できるギフト、paidExclude = 有償コインでは使えないギフト）
   const G_FORMULAS = {
     giflan: {
-      coins: [5, 100, 300, 1000, 3000, 7000, 10000, 20000, 30000],
-      paidExclude: [5, 100],
+      coins: [5, 300, 1000, 3000, 7000, 10000, 20000, 30000],
+      paidExclude: [5],
       boostOnly: [],
-      defaults: [5, 100, 300, 3000, 7000, 20000],
-      hasLimited: false,
+      defaults: [5, 300, 3000, 7000, 20000],
       hasBoost: false,
-      desc: '<b>ギフラン式</b>　イベント限定ギフト（無償コインの100のみ）：<b>1.5倍</b>　それ以外のギフト：<b>等倍</b>'
+      desc: '<b>ギフラン式</b>　有償コイン <b>3.0倍</b> ／ 無償コイン <b>1.5倍</b>'
     },
     petit: {
       coins: [5, 100, 300, 1000, 3000, 7000, 10000, 20000, 30000],
       paidExclude: [5, 100],
       boostOnly: [100],
       defaults: [5, 100, 300, 3000, 7000, 20000],
-      hasLimited: false,
       hasBoost: true,
       desc: '<b>プチラン式</b>　無償コイン <b>50倍</b> ／ 有償コイン <b>100倍</b>　ブースト中は全体 ×1.2、ブースト中のみ無償に100コインを追加（<b>60倍</b>）'
     },
@@ -1094,7 +1084,6 @@
       paidExclude: [],
       boostOnly: [],
       defaults: [100, 1000, 10000],
-      hasLimited: false,
       hasBoost: false,
       desc: '<b>配信者RK式</b>　有償コイン <b>100倍</b> ／ 無償コイン <b>50倍</b>　ギフトは100 / 1000 / 10000の3種類'
     }
@@ -1110,10 +1099,9 @@
   // 計算式ごとの選択状態を保持（切り替えても戻せる）
   const gState = {};
   Object.keys(G_FORMULAS).forEach(function (key) {
-    gState[key] = { selected: {}, limited: {} };
+    gState[key] = { selected: {} };
     G_FORMULAS[key].coins.forEach(function (c) {
       gState[key].selected[c] = G_FORMULAS[key].defaults.indexOf(c) !== -1;
-      gState[key].limited[c] = true;
     });
   });
 
@@ -1123,7 +1111,7 @@
   // 1ギフトあたりのptを計算式ごとに求める
   function gGiftPt(formula, coin, type) {
     if (formula === 'giflan') {
-      return (coin === 100 && type === 'free') ? coin * 1.5 : coin;
+      return coin * (type === 'paid' ? 3.0 : 1.5);
     }
     if (formula === 'petit') {
       if (coin === G_BOOST_ONLY_COIN) return coin * G_BOOST_ONLY_RATE;
@@ -1135,7 +1123,6 @@
   function gGiftLabel(formula, coin, type) {
     const base = (type === 'paid' ? '有償 ' : '無償 ') + coin.toLocaleString() + 'コイン';
     if (formula === 'petit' && coin === G_BOOST_ONLY_COIN) return base + '（ブースト限定60倍）';
-    if (formula === 'giflan' && coin === 100 && type === 'free') return base + '（限定）';
     return base;
   }
 
@@ -1185,9 +1172,7 @@
     });
 
     const note = document.getElementById('g-gift-note');
-    if (gFormula === 'giflan') {
-      note.textContent = '5コイン・100コイン（限定）は無償コイン専用です';
-    } else if (gFormula === 'petit' && gBoostOn) {
+    if (gFormula === 'petit' && gBoostOn) {
       note.textContent = '5コイン・100コイン（ブースト限定60倍）は無償コイン専用です';
     } else if (f.paidExclude.length) {
       note.textContent = '5コインは無償コイン専用です';
